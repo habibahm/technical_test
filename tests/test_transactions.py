@@ -64,13 +64,22 @@ def test_get_balance():
     assert balance_1== 0
     future_withdrawals_1 = response_1['future_withdrawals']
     assert len(future_withdrawals_1) == 3
+    assert future_withdrawals_1[0]['covered_rate'] == 100
+    assert future_withdrawals_1[1]['covered_rate'] == 100
+    assert future_withdrawals_1[2]['covered_rate'] == float(17/3)
     response_2 = client.get("users/2/transactions/balance").json()
     balance_2 = response_2['balance']
     assert balance_2== 0
     future_withdrawals_2 = response_2['future_withdrawals']
     assert len(future_withdrawals_2) == 5
+    assert future_withdrawals_2[0]['covered_rate'] == 100
+    assert future_withdrawals_2[1]['covered_rate'] == 30
+    assert future_withdrawals_2[-1]['covered_rate'] == 0
     response_3 = client.get("users/3/transactions/balance").json()
     balance_3 = response_3['balance']
     assert balance_3== 30
     future_withdrawals_3 = response_3['future_withdrawals']
     assert len(future_withdrawals_3) == 1
+    assert future_withdrawals_3[0]['covered_rate'] == 100
+    response_non_existing_user = client.get("users/100/transactions/balance")
+    assert response_non_existing_user.status_code == 404

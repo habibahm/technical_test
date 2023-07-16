@@ -27,7 +27,7 @@ def current_balance(db: Database, user_id: int) -> int:
 
 def future_balance(db: Database, user_id: int) -> list:
     """
-    Returns future balance of the user and the future withdrawals
+    Returns dict with the future balance of the user and the future withdrawals
     """
     scheduled_withdrawals = [
         transaction
