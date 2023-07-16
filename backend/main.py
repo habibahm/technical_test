@@ -3,7 +3,7 @@ from typing import Any, List
 from fastapi import FastAPI, HTTPException
 
 from backend.db import InMemoryDB
-from backend.logic import transactions, users
+from backend.logic import transactions, users, balance
 from backend.models import Transaction, TransactionRow
 
 app = FastAPI()
@@ -24,7 +24,7 @@ async def get_transactions(user_id: int) -> List[TransactionRow]:
 
 
 @app.get(
-    "/users/{user_id}/transactions/{transaction_id}", response_model=TransactionRow
+    "/users/{user_id}/transactions/{transaction_id:int}", response_model=TransactionRow
 )
 async def get_transaction(user_id: int, transaction_id: int) -> TransactionRow:
     """Returns a given transaction of the user."""
@@ -45,5 +45,6 @@ async def create_transaction(user_id: int, transaction: Transaction) -> Transact
 @app.get("/users/{user_id}/transactions/balance")
 async def get_balance(user_id: int) -> Any:  # pylint: disable=unused-argument
     """Computes the balance of payments for a user subscription."""
-    # We expect you to write this function
-    return None
+    if users.user(db, user_id) is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return balance.future_balance(db, user_id)
