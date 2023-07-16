@@ -57,3 +57,20 @@ def test_create_transaction(deposit_transaction):
     assert transaction["type"] == "deposit"
     assert transaction["date"] == date.today().isoformat()
     assert transaction["state"] == "pending"
+
+def test_get_balance():
+    response_1 = client.get("users/1/transactions/balance").json()
+    balance_1 = response_1['balance']
+    assert balance_1== 0
+    future_withdrawals_1 = response_1['future_withdrawals']
+    assert len(future_withdrawals_1) == 3
+    response_2 = client.get("users/2/transactions/balance").json()
+    balance_2 = response_2['balance']
+    assert balance_2== 0
+    future_withdrawals_2 = response_2['future_withdrawals']
+    assert len(future_withdrawals_2) == 5
+    response_3 = client.get("users/3/transactions/balance").json()
+    balance_3 = response_3['balance']
+    assert balance_3== 30
+    future_withdrawals_3 = response_3['future_withdrawals']
+    assert len(future_withdrawals_3) == 1
